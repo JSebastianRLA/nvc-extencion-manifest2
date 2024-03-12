@@ -3,7 +3,7 @@ var isFetching = null;
 var storedEvents = new Array();
 var notVisited = {};
 
-$(window).on("load", function() {
+$(window).on("load", function () {
   initilise();
   // Wait some ms to throw main function
   var delay = setTimeout(main, 100);
@@ -29,8 +29,9 @@ function main() {
   isFetching = true;
 
   var url =
+    "https://" +
     localStorage["ip_address"] +
-    "/include/api.php?op=get&op2=events&return_type=json";
+    "/pandora_console/include/api.php?op=get&op2=events&return_type=json";
   var feedUrl = url;
   var data = new FormData();
 
@@ -162,7 +163,7 @@ function parseReplyEvents(reply) {
       type: event.event_type,
       source: event.source,
       severity: event.criticity_name,
-      visited: false
+      visited: false,
     });
   }
   // Return the events
@@ -204,7 +205,7 @@ function displayNotification(pEvent) {
   // Note, Chrome does not implement the permission static property
   // So we have to check for NOT 'denied' instead of 'default'
   else if (Notification.permission !== "denied") {
-    Notification.requestPermission(function(permission) {
+    Notification.requestPermission(function (permission) {
       // Whatever the user answers, we make sure we store the information
       if (!("permission" in Notification)) {
         Notification.permission = permission;
@@ -227,25 +228,27 @@ function getNotification(pEvent) {
 
   var url =
     pEvent["agent"] == 0
-      ? localStorage["ip_address"] +
-        "/index.php?sec=eventos&sec2=operation/events/events"
-      : localStorage["ip_address"] +
-        "/index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente=" +
+      ? "https://" +
+        localStorage["ip_address"] +
+        "/pandora_console/index.php?sec=eventos&sec2=operation/events/events"
+      : "https://" +
+        localStorage["ip_address"] +
+        "/pandora_console/index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente=" +
         pEvent["agent"];
 
   var notification = new Notification(pEvent["title"], {
     body: even,
-    icon: "images/icon.png"
+    icon: "images/icon.png",
   });
 
   // Add the link
-  notification.onclick = function(event) {
+  notification.onclick = function (event) {
     event.preventDefault();
     window.open(url, "_blank");
   };
 
   // Close notification after 10 secs
-  setTimeout(function() {
+  setTimeout(function () {
     notification.close();
   }, 10000);
 }

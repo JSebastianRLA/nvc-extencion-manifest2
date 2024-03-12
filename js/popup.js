@@ -1,6 +1,7 @@
 var max_events;
 var bg;
-$(document).ready(function() {
+
+$(document).ready(function () {
   max_events = localStorage["events"];
   if (localStorage["events"] == undefined) {
     localStorage["events"] = "20";
@@ -21,7 +22,11 @@ $(document).ready(function() {
   document.getElementById("m_refresh").addEventListener("click", mrefresh);
 
   // Added listener to background messages
-  chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  chrome.runtime.onMessage.addListener(function (
+    message,
+    sender,
+    sendResponse
+  ) {
     switch (message.text) {
       case "FETCH_EVENTS":
         setSpinner();
@@ -97,15 +102,17 @@ function showEvents() {
 
       var agent_url =
         allEvents[i]["agent"] == 0
-          ? localStorage["ip_address"] +
-            "/index.php?sec=eventos&sec2=operation/events/events"
-          : localStorage["ip_address"] +
-            "/index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente=" +
+          ? "https://" +
+            localStorage["ip_address"] +
+            "/pandora_console/index.php?sec=eventos&sec2=operation/events/events"
+          : "https://" +
+            localStorage["ip_address"] +
+            "/pandora_console/index.php?sec=estado&sec2=operation/agentes/ver_agente&id_agente=" +
             allEvents[i]["agent"];
       a.setAttribute("href", agent_url);
       a.target = "_blank";
       a.className = "a_2_mo";
-
+      console.log(allEvents[i]["agent"]);
       a.innerText = allEvents[i]["title"];
       eve_title.setAttribute("class", "event sev-" + allEvents[i]["severity"]);
 
@@ -156,15 +163,9 @@ function showHide() {
   var pid = "p_" + nums[1];
 
   // Mark as visited if visited
-  if (
-    $(this)
-      .parent()
-      .css("font-weight") == "600"
-  ) {
+  if ($(this).parent().css("font-weight") == "600") {
     bg.removeNotVisited(nums[2]);
-    $(this)
-      .parent()
-      .css("font-weight", "");
+    $(this).parent().css("font-weight", "");
   }
 
   // Toggle information
